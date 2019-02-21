@@ -31,7 +31,9 @@ import "github.com/gomodule/redigo/redis"
 import log "github.com/golang/glog"
 import "github.com/valyala/gorpc"
 import "github.com/importcjj/sensitive"
-import "github.com/bitly/go-simplejson"
+import (
+	"github.com/bitly/go-simplejson"
+)
 
 
 //storage server,  peer, group, customer message

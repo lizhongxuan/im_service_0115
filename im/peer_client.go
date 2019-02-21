@@ -114,6 +114,7 @@ func (client *PeerClient) HandleSync(sync_key *SyncKey) {
 	client.EnqueueMessage(&Message{cmd:MSG_SYNC_END, body:sk})
 }
 
+//保存到redis内存
 func (client *PeerClient) HandleSyncKey(sync_key *SyncKey) {
 	if client.uid == 0 {
 		return

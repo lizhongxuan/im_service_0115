@@ -167,6 +167,7 @@ func (client *Client) HandleAuthToken(login *AuthenticationToken, version int) {
 		client.EnqueueMessage(msg)
 		return
 	}
+
 	if uid == 0 {
 		log.Info("auth token uid==0")
 		msg := &Message{cmd: MSG_AUTH_STATUS, version: version, body: &AuthenticationStatus{1, 0}}
@@ -195,6 +196,10 @@ func (client *Client) HandleAuthToken(login *AuthenticationToken, version int) {
 		//ontification_on  0  ->   在线    ->  不推送
 		//ontification_on  1  ->   不在线 ->  推送
 		on = GetUserNotification(appid, uid)
+	}
+
+	if is_mobile || on {
+		setUnread(appid,uid)
 	}
 
 	online := true
@@ -240,6 +245,14 @@ func (client *Client) HandleAuthToken(login *AuthenticationToken, version int) {
 		SendSystemMsg(content, uid, appid)
 		log.Info("PC online content:", content)
 	}
+}
+
+func setUnread(appid int64,uid int64)  {
+	conn := redis_pool.Get()
+	defer conn.Close()
+	unread_key := fmt.Sprintf("unread_%d_%d", appid, uid)
+	conn.Do("SET", unread_key, 0)
+	log.Info("unread_key:",unread_key ," set 0" )
 }
 
 func have_PC_online(appid int64, uid int64) bool {
